@@ -1,0 +1,28 @@
+[project]
+name = "odoo-addon-auditor"
+version = "1.0.0"
+description = "Static auditor for Odoo addon version-compatibility defects"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Xeno Xerxes Masong" }]
+
+[project.scripts]
+odoo-audit = "odoo_auditor.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["odoo_auditor*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
