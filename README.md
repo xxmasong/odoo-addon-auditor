@@ -167,3 +167,21 @@ tests/
 ## Licence
 
 MIT
+
+## Live playground
+
+<https://auditor.xenitsystems.com>
+
+The page runs **this package** in the browser under Pyodide — not a
+reimplementation — so the findings it reports are the findings the CLI reports.
+Four samples are preloaded, including the real production defect and two that
+must stay silent (a correct addon and an Owl template), because a linter has to
+be right about clean code as often as it catches bad code.
+
+Rebuild the browser bundle after changing a rule:
+
+```bash
+python demo/build.py        # regenerates demo/auditor-src.js from odoo_auditor/
+```
+
+The demo is deployed as a static container behind Traefik; see `demo/compose.yml`.

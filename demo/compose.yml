@@ -1,0 +1,19 @@
+# Deploys onto the host's existing Traefik (Coolify's coolify-proxy), which
+# already owns :80/:443 and handles certificates. The Cloudflare tunnel points
+# the public hostname at that proxy, so nothing here publishes a port directly.
+services:
+  auditor-demo:
+    build: .
+    container_name: auditor-demo
+    restart: unless-stopped
+    networks: [coolify]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=coolify
+      - traefik.http.routers.auditor.rule=Host(`auditor.xenitsystems.com`)
+      - traefik.http.routers.auditor.entrypoints=http
+      - traefik.http.services.auditor.loadbalancer.server.port=80
+
+networks:
+  coolify:
+    external: true

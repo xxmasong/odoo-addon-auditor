@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odoo Addon Auditor</title>
+<meta name="description" content="Catch Odoo addon defects before they reach production. Runs the real auditor in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <h1>Odoo Addon Auditor</h1>
+    <p class="tagline">
+      Static analysis that answers one question before you install third-party
+      code into a production ERP: <strong>will this break records it does not own?</strong>
+    </p>
+    <div class="stats">
+      <div class="stat"><b>737</b><span>real addons scanned</span></div>
+      <div class="stat"><b>3 / 3</b><span>production breakers caught</span></div>
+      <div class="stat"><b>71%</b><span>reported clean</span></div>
+      <div class="stat"><b>65</b><span>tests</span></div>
+    </div>
+    <nav class="links">
+      <a href="https://github.com/xxmasong/odoo-addon-auditor">Source on GitHub</a>
+      <a href="#story">Why it exists</a>
+    </nav>
+  </header>
+
+  <section class="card">
+    <div class="toolbar">
+      <label class="sel">
+        <span>Sample</span>
+        <select id="sample"></select>
+      </label>
+      <button id="run" class="btn btn-primary" disabled>Run audit</button>
+      <span id="status" class="status status-busy">starting…</span>
+    </div>
+    <p class="hint">
+      This runs the actual Python package in your browser via Pyodide — not a
+      reimplementation. Edit the code and re-run; the findings are what the CLI
+      would print.
+    </p>
+    <div class="split">
+      <div class="pane">
+        <div id="tabs" class="tabs" role="tablist"></div>
+        <textarea id="editor" spellcheck="false" aria-label="Addon source"></textarea>
+      </div>
+      <div class="pane">
+        <h2 class="pane-title">Findings</h2>
+        <div id="results"><p class="placeholder">Run the audit to see findings.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="story">
+    <h2>Why it exists</h2>
+    <p>
+      I was running a self-hosted Odoo 18 ERP with 743 installed modules. Three
+      third-party addons broke core flows — one took down invoicing database-wide,
+      another made payments silently fail to post with its own feature switched
+      <em>off</em>. Finding them took a day of test-restores and smoke runs.
+    </p>
+    <p>
+      So I wrote the check I wished I had run first, then validated it by pointing
+      it back at the same code: it independently flagged all three, plus seventeen
+      more addons with the same defect shape, across 737 modules from the Odoo
+      apps store — while reporting 71% of them completely clean.
+    </p>
+    <h3>The rule that matters most</h3>
+    <p>
+      An override of a core ORM hook that never calls <code>super()</code>. Two of
+      the three incidents were exactly this. Grep finds
+      <code>def action_post</code> easily; deciding whether <code>super()</code> is
+      actually reached needs the syntax tree, which is why this is an AST rule and
+      not a regex.
+    </p>
+  </section>
+
+  <footer class="foot">Built by Xeno Xerxes Masong · MIT licensed</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
