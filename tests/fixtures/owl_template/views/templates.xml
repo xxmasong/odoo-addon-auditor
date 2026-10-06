@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="owl_widget.Badge">
+        <span t-att-class="props.className" t-esc="props.label"/>
+        <div t-if="state.open" t-attf-style="width: {{props.width}}px">
+            <t t-foreach="items" t-as="item" t-key="item.id">
+                <span t-out="item.name"/>
+            </t>
+        </div>
+    </t>
+</templates>
